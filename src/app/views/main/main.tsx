@@ -1,6 +1,20 @@
 import * as React from 'react';
+
 import {Howl, Howler} from 'howler';
 const Tone = require("Tone");
+
+import NoteButton from '../../components/noteButton';
+
+const notes = [
+  {id: 'C4-8n', name: 'C4 1/8', note: 'C4', noteLength: '8n'},
+  {id: 'C4-4n', name: 'C4 1/4', note: 'C4', noteLength: '4n'},
+  {id: 'C4-2n', name: 'C4 1/2', note: 'C4', noteLength: '2n'},
+  {id: 'C4-1n', name: 'C4 1', note: 'C4', noteLength: '1n'},
+  {id: 'G4-8n', name: 'G4 1/8', note: 'G4', noteLength: '8n'},
+  {id: 'G4-4n', name: 'G4 1/4', note: 'G4', noteLength: '4n'},
+  {id: 'G4-2n', name: 'G4 1/2', note: 'G4', noteLength: '2n'},
+  {id: 'G4-1n', name: 'G4 1', note: 'G4', noteLength: '1n'},
+  ];
 
 // Links for guides for making music
 // https://codepen.io/gregh/project/editor/aAexRX
@@ -8,14 +22,13 @@ const Tone = require("Tone");
 
 export default class Main extends React.Component<any, any> {
 
-  private sound = null;
-  private synth = null;
+  private sound: Howl = null;
 
   state = {
     playing: false
   };
 
-  componentDidMount(props: any) {
+  componentWillMount(props: any) {
 
     /* HOWLER.JS */
     this.sound = new Howl({
@@ -23,24 +36,9 @@ export default class Main extends React.Component<any, any> {
     });
     // Change global volume.
     Howler.volume(0.5);
-
-    /* TONE.JS */
-    //create a synth and connect it to the master output (your speakers)
-    this.synth = new Tone.Synth().toMaster();
   }
 
-  btnToneClicked = (event) => {
-
-    event.preventDefault();
-    const note = event.target.dataset.note;
-    const noteLength = event.target.dataset.notelength;
-
-    console.log('playing note ', note, noteLength);
-
-    this.synth.triggerAttackRelease(note, noteLength);
-  };
-
-  btnHowlerClicked = (event) => {
+  btnHowlerClicked = (event: any) => {
     // Prevent form submit
     event.preventDefault();
 
@@ -72,17 +70,16 @@ export default class Main extends React.Component<any, any> {
 
         <h2>Welcome to my music maker!</h2>
 
-        <input type={'button'} onClick={this.btnHowlerClicked} value={'Howler'} />
+        <input type={'button'} onClick={this.btnHowlerClicked} value={'Cheer yourself up!'} />
 
-        <input type={'button'} onClick={(e) => this.btnToneClicked(e)} value={'Note C4 1/8'} data-note={'C4'} data-noteLength={'8n'} />
-        <input type={'button'} onClick={(e) => this.btnToneClicked(e)} value={'Note C4 1/4'} data-note={'C4'} data-noteLength={'4n'} />
-        <input type={'button'} onClick={(e) => this.btnToneClicked(e)} value={'Note C4 1/2'} data-note={'C4'} data-noteLength={'2n'} />
-        <input type={'button'} onClick={(e) => this.btnToneClicked(e)} value={'Note C4 1/1'} data-note={'C4'} data-noteLength={'1n'} />
-
-        <input type={'button'} onClick={(e) => this.btnToneClicked(e)} value={'Note E4 1/8'} data-note={'E4'} data-notelength={'8n'} />
-        <input type={'button'} onClick={(e) => this.btnToneClicked(e)} value={'Note E4 1/4'} data-note={'E4'} data-notelength={'4n'} />
-        <input type={'button'} onClick={(e) => this.btnToneClicked(e)} value={'Note E4 1/2'} data-note={'E4'} data-notelength={'2n'} />
-        <input type={'button'} onClick={(e) => this.btnToneClicked(e)} value={'Note E4 1/1'} data-note={'E4'} data-notelength={'1n'} />
+        {(notes || []).map(note => {
+          return <NoteButton
+            key={note.id}
+            name={note.name}
+            note={note.note}
+            noteLength={note.noteLength}
+          />
+        })}
 
       </div>
     );
